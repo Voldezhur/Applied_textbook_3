@@ -1,4 +1,4 @@
-// Сложение и вычитание в столбик с ручным вводом чисел
+// Сложение и вычитание в столбик
 
 
 #include <iostream>
@@ -6,21 +6,70 @@
 using namespace std;
 
 
-// Ввод большого числа длины n
-short* inputBigNum(int n){
+// Генератор чисел фон Неймана длины x без проверки на первый ноль
+short fonNeyman(unsigned int x){
+    if(x < 8){
+        // seed
+        static double A = 8691454555;
+
+        // get the number from which to get the random value
+        string B = to_string(A*A);
+        string num = "";
+
+        // index to start building randomized value from
+        int n = 10;
+        
+
+        // build randomized value with numbers taken from the middle of the original number (from 5th to (x-1)th)
+        for(int i = n; i <= n + x - 1; i++){
+            // check if value starts with 0 and if it does replace 0  with 1
+            if(i == n && B[i] == '0'){
+                num += '1';
+            }
+
+            else{
+                num += B[i];
+            }
+            //num += B[i];
+        }
+
+
+        // replace A with B for different results, checking if the first number is 0 and replacing it with 1 in that case
+        if(B[4] == '0'){
+            B[4] = '1';
+        }
+
+        A = stod(B.substr(4, 11));
+    
+
+        // return final randomized value
+        int out = stoi(num);
+        
+        return(out);
+    }
+
+
+    else{
+        cout << "x must be less than 8";
+    }
+    
+    return 0;
+}
+
+// Создание большого числа длины n
+short* bigNum(int n){
     // создание динамического массива
     short* num = new short[n];
-    string line;
 
-    // считывание строки
-    cout << "Введите число:\n";
-    cin >> ws;
-    getline(cin, line);
-    
-    // цикл создания числа
+    // цикл создания и вывода числа
     for(int i = 0; i < n; i++){
-        short m = line[i] - '0';
-        num[i] = m;
+        // проверка, чтобы первая цифра не была равна нулю
+        if(i == 0){
+            num[i] = (num[i] == 0 ? 1 : num[i]);
+        }
+        
+        // создание и вывод случайной цифры
+        num[i] = fonNeyman(1);
     }
 
     return num;
@@ -59,6 +108,7 @@ int isBigger(short* num1, short* num2, int n1, int n2){
 
 // Сложение больших чисел
 int cornerFix;
+
 short* addNums(short* numt, short* numz, int n1, int n2){
     // длина максимального и минимального числа
     int maxLen = max(n1, n2);
@@ -207,16 +257,13 @@ short* subtNums(short* numt, short* numz, int n1, int n2){
 int main(){
     // создание чисел
     int n1, n2;
-    
-    // Ввод первого числа
-    cout << "Введите длину первого числа:\n";
     cin >> n1;
-    short* num1 = inputBigNum(n1);
 
-    // Ввод второго числа
-    cout << "Введите длину второго числа:\n";
+    short* num1 = bigNum(n1);
+
     cin >> n2;
-    short* num2 = inputBigNum(n2);
+
+    short* num2 = bigNum(n2);
     
 
     // вывод чисел
@@ -241,7 +288,7 @@ int main(){
             cout << addResult[i];
         }
     }
-
+    
     cout << '\n';
 
 
@@ -251,7 +298,7 @@ int main(){
 
     // вывод результата вычитания
     for(int i = 0; i < max(n1, n2); i++){
-        cout << subtResult[i];
+        cout << ((i == 0 && subtResult[i] == 0) ? 0 : subtResult[i]);
     }
 
     cout << '\n';
