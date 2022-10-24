@@ -1,6 +1,6 @@
-// Ускоренное сложение в десятичной
+// Умножение больших чисел в столбик
 
-
+// в функции умножения работать с вектором, но вернуть динам. массив, построенный из длины вектора циклом
 #include <iostream>
 
 using namespace std;
@@ -165,6 +165,92 @@ short* quickAddNums(short* num1, short* num2, int n1, int n2){
     return sum;
 }
 
+// Умножение больших чисел в столбик
+short* multNums(short* num1, short* num2, int n1, int n2){
+    // длина максимального и минимального числа
+    int maxLen = max(n1, n2);
+    int minLen = min(n1, n2);
+    int diff = maxLen - minLen;
+
+    // создание массивов для чисел
+    short* number1 = num1;
+    short* number2temp = num2;
+
+
+    // замена массивов местами, чтобы number1 был б`ольшим числом
+    short* temp = number1;
+
+    if(isBigger(number2temp, number1, n2, n1)){
+        number1 = number2temp;
+        number2temp = temp;
+    }
+
+
+    // Формирование меньшего числа
+    short* number2 = new short[maxLen];
+
+    // запись цифр числа в отдельный массив
+    for(int i = maxLen - 1; i >= diff; i--){
+        number2[i] = number2temp[i - diff];
+    }
+
+    // добавление ведущих нулей, если это необходимо
+    for(int i = 0; i < maxLen - minLen; i++){
+        number2[i] = 0;
+    }
+
+    // Теперь number1 - б`ольшое число, number2 - меньшее число (с ведущими нулями)
+
+
+    // Массив для суммы
+    int ansLen = n1 + n2;
+    short* sum = new short[ansLen];
+
+    // Обнуление ответа
+    for(int i = 0; i < ansLen; i++){
+        sum[i] = 0;
+    }
+
+
+    // Цикл умножения
+    int p = 0;
+
+    for(int z = maxLen - 1; z >= 0; z--){
+        for(int i = maxLen - 1; i >= diff; i--){
+            // создание массива для числа
+            int tempSumLen = 2 + (maxLen - (i + 1) + p);
+            short* a = new short[tempSumLen];
+
+            // Число
+            int t = number1[z] * number2[i];
+
+            // Обнуление массива числа
+            for(int j = 0; j < tempSumLen; j++){
+                a[j] = 0;
+            }
+        
+            // Построение массива числа
+            a[0] = t / 10;
+            a[1] = t % 10;
+
+
+            sum = quickAddNums(sum, a, ansLen, tempSumLen);
+            delete[] a;
+        }
+        p++;
+    }
+    
+
+    // Освобождение памяти
+    number1 = NULL;
+    number2 = NULL;
+    number2temp = NULL;
+    temp = NULL;
+    delete[] number1, number2, number2temp, temp;
+
+    return sum;
+}  
+
 
 int main(){
     // создание чисел
@@ -193,20 +279,16 @@ int main(){
     cout << '\n';
 
 
-    // сложение
-    short* addResult = quickAddNums(num1, num2, n1, n2);
-    cout << "Результат сложения:\n";
+    // Вывод результата умножения
+    short* multResult = multNums(num1, num2, n1, n2);
+    cout << "Результат умножения:\n";
 
-    // вывод результата сложения
-    for(int i = 0; i < max(n1, n2) + 1; i++){
-        if (!(i == 0 && addResult[0] == 0)){
-            cout << addResult[i];
-        }
+    for(int i = 0; i < n1 + n2; i++){
+        cout << multResult[i];
     }
 
-    cout << '\n';
 
-    // освобождение памяти
-    delete[] addResult;
+    // Освобождение памяти
+    delete[] multResult;
     delete[] num1, num2;
 }

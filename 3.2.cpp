@@ -151,6 +151,7 @@ short* quickAddNums(short* num1, short* num2, int n1, int n2){
 
         p = peren;
         peren = NULL;
+        delete[] peren;
     }
 
 
