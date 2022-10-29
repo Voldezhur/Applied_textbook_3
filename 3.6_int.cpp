@@ -1,7 +1,9 @@
-#include <iostream>
-#include <math.h>
+// Деление методом половинного деления (Малые числа)
 
-using std::cin, std::cout;
+
+#include <iostream>
+
+using std::cout, std::cin;
 
 
 double F(double A, double B, double p){
@@ -32,9 +34,9 @@ int main(){
         }
     }
 
-    cout << "\nПолученное значение: " << P;
+    cout << "\nПолученное значение: " << P << '\n';
 
     P = std::floor(P);
     cout << "\nЦелое: " << P;
-    cout << "\nОстаток: " << A - B * P << '\n';
+    cout << "\nОстаток: " << A - B * P << "\n\n";
 }
