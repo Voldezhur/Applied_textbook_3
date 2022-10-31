@@ -2,6 +2,7 @@
 
 
 #include <iostream>
+#include <math.h>
 
 using std::cout, std::cin;
 
@@ -36,7 +37,7 @@ int main(){
 
     cout << "\nПолученное значение: " << P << '\n';
 
-    P = std::floor(P);
+    P = std::round(P);
     cout << "\nЦелое: " << P;
     cout << "\nОстаток: " << A - B * P << "\n\n";
 }
